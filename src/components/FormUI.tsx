@@ -12,14 +12,26 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FormUI() {
-  const { control, handleSubmit } = useForm<SignUpData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ padding: 15 }}>
         <View>
+          <Text style={styles.headerStyle}>Sign up form</Text>
           <Controller
             control={control}
             name="firstName"
@@ -33,6 +45,9 @@ export default function FormUI() {
               />
             )}
           />
+          {errors.firstName && (
+            <Text style={styles.errorText}>{errors.firstName.message}</Text>
+          )}
           <Controller
             control={control}
             name="lastName"
@@ -46,6 +61,9 @@ export default function FormUI() {
               />
             )}
           />
+          {errors.lastName && (
+            <Text style={styles.errorText}>{errors.lastName.message}</Text>
+          )}
           <Controller
             control={control}
             name="email"
@@ -60,6 +78,9 @@ export default function FormUI() {
               />
             )}
           />
+          {errors.email && (
+            <Text style={styles.errorText}>{errors.email.message}</Text>
+          )}
           <Controller
             control={control}
             name="password"
@@ -74,6 +95,9 @@ export default function FormUI() {
               />
             )}
           />
+          {errors.password && (
+            <Text style={styles.errorText}>{errors.password.message}</Text>
+          )}
           <Controller
             control={control}
             name="confirmPassword"
@@ -88,11 +112,24 @@ export default function FormUI() {
               />
             )}
           />
+          {errors.confirmPassword && (
+            <Text style={styles.errorText}>
+              {errors.confirmPassword.message}
+            </Text>
+          )}
           <Pressable
             style={styles.buttonStyle}
-            onPress={() => handleSubmit((data) => console.log(data))}
+            onPressIn={() =>
+              handleSubmit((data) => {
+                console.log({
+                  firstName: data.firstName,
+                  lastName: data.lastName,
+                  email: data.email,
+                });
+              })()
+            }
           >
-            <Text style={styles.textStyle}>Sign up</Text>
+            <Text style={styles.buttonTextStyle}>Sign up</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -102,19 +139,18 @@ export default function FormUI() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
     justifyContent: "flex-start",
     backgroundColor: "#f3f3f3",
   },
 
   inputField: {
-    color: "#0010",
+    color: "#001000",
     padding: 8,
     margin: 6,
     borderWidth: 2,
+    borderRadius: 10,
     borderColor: "black",
-    width: "auto",
+    maxWidth: "auto",
   },
 
   buttonStyle: {
@@ -124,8 +160,20 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 
-  textStyle: {
+  headerStyle: {
+    color: "#3f3f3f",
+    marginHorizontal: 8,
+    fontWeight: "bold",
+    fontSize: 24,
+  },
+
+  buttonTextStyle: {
     color: "#ffffff",
     textAlign: "center",
+  },
+
+  errorText: {
+    color: "red",
+    marginHorizontal: 6,
   },
 });

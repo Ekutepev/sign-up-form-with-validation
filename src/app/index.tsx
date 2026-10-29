@@ -1,10 +1,16 @@
 import FormUI from "@/components/FormUI";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function Index() {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <FormUI />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
