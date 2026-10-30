@@ -1,5 +1,6 @@
 import { SignUpData, signUpSchema } from "@/schemas/signUpSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import {
   Pressable,
@@ -12,9 +13,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FormUI() {
+  const route = useRouter();
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
@@ -26,6 +29,14 @@ export default function FormUI() {
       confirmPassword: "",
     },
   });
+
+  const onSubmit = (data: SignUpData) => {
+    route.push({
+      pathname: "/confirmationPage",
+      params: { firstName: data.firstName },
+    });
+    reset();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -119,15 +130,7 @@ export default function FormUI() {
           )}
           <Pressable
             style={styles.buttonStyle}
-            onPressIn={() =>
-              handleSubmit((data) => {
-                console.log({
-                  firstName: data.firstName,
-                  lastName: data.lastName,
-                  email: data.email,
-                });
-              })()
-            }
+            onPress={() => handleSubmit(onSubmit)()}
           >
             <Text style={styles.buttonTextStyle}>Sign up</Text>
           </Pressable>
